@@ -1,0 +1,281 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>Weatherino</title>
+    <!-- MDB icon -->
+    <link rel="icon" href="img/mdb-favicon.ico" type="image/x-icon" />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <!-- Google Fonts Roboto -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap"
+    />
+    <!-- MDB -->
+    <link rel="stylesheet" href="{% static 'css/mdb.min.css' %}" />
+    <style>
+      
+    </style>
+  </head>
+  <body>
+    <!-- Start your project here-->
+    <div>
+    <header>
+      <!-- Navbar -->
+      <nav class="navbar navbar-expand-lg py-4 navbar-light bg-dark">
+        <!-- Container wrapper -->
+        <div class="container">
+          <!-- Navbar brand -->
+          <a class="navbar-brand me-2" href="#">
+            <img
+              src="{% static 'images/logo.png' %}"
+              height="25"
+              width='100%'
+              alt="MDB Logo"
+              loading="lazy"
+              style="margin-top: -1px"
+            />
+          </a>
+
+          <!-- Toggle button -->
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-mdb-toggle="collapse"
+            data-mdb-target="#navbarButtonsExample"
+            aria-controls="navbarButtonsExample"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <i class="fas fa-bars"></i>
+          </button>
+
+          <!-- Collapsible wrapper -->
+          <div class="collapse navbar-collapse" id="navbarButtonsExample">
+            <!-- Left links -->
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <h5 class="nav-link text-primary" href="#">Weatherino</h5>
+              </li>
+            </ul>
+            <!-- Left links -->
+
+            <div class="d-flex align-items-center">
+              <button type="button" class="btn btn-link px-3 me-2">
+                Login
+              </button>
+              <button type="button" class="btn btn-primary me-3">
+                Sign up for free
+              </button>
+              <a
+                class="btn btn-dark px-3"
+                href="https://github.com/mdbootstrap/mdb-ui-kit"
+                role="button"
+                ><i class="fab fa-github"></i
+              ></a>
+            </div>
+          </div>
+          <!-- Collapsible wrapper -->
+        </div>
+        <!-- Container wrapper -->
+      </nav>
+      <!-- Navbar -->
+    </header>
+
+    <div class='container-fluid align-content-center justify-content-center bg-image bg-primary py-3' style='background-image:url({% static "images/banner.png" %})'>
+      <form method='POST'>
+        {% csrf_token %}
+        <div class="input-group rounded-pill bg-transparent mx-auto w-75">
+      
+          <div class="form-outline bg-fixed rounded-pill w-75">
+            {{form.name}}
+            <label class="form-label text-light" for="form1">Search</label>
+          </div>
+          
+          
+          <button type="submit" class="btn btn-rounded btn-primary">
+            <i class="fas fa-search"></i> Find
+          </button>
+        </div>
+      </form>
+      {% if msgg %}
+      <div class="alert alert-{{c_msg}} w-25 mx-auto" role="alert" data-mdb-color="{{c_msg}}">
+      <i class="fas fa-check-circle me-3"></i>{{msgg}} !
+      </div>
+      {% endif %} 
+    </div>
+
+    <section class=" py-4" style="background-color: #4B515D;">
+        <div class="container py-4 ">
+          
+          <div class="flex-column gx-4 py-5 flex-md-row flex-wrap align-content-around d-flex justify-content-evenly align-items-start">
+            
+            {% for city_weather in new_data %}
+              <div class="card col-10 col-md-3 ms-2 mb-3" style="color: #4B515D; border-radius: 35px;">
+                <div class="card-body p-4">
+                  <a href='{% url "deleteinfo" city_weather.id %}' type="submit" class="btn-close float-end" aria-label="Close"></a>
+                  {% if city_weather.country_full %}
+                  <i class="flag flag-{{city_weather.country_full}}"></i>
+                  {% else %}
+                  <i class="flag"></i>
+                  {% endif %}
+                  <div class="d-flex py-1">
+                    <h6 class="flex-grow-1">{{city_weather.city}}</h6>
+                    <h6>UTC {{city_weather.timezone}}</h6>
+                  </div>
+      
+                  <div class="d-flex flex-column text-center mt-5 mb-4">
+                    <span><i class="flag "></i>{{city_weather.country}}</span>
+                    <h6 class="display-4 mb-0 font-weight-bold" style="color: #1C2331;"> {{city_weather.temp}}°C </h6>
+                    <span class="small" style="color: #868B94">{{city_weather.description}}</span>
+                  </div>
+      
+                  <div class="d-flex align-items-center">
+                    <div class="flex-grow-1" style="font-size: 1rem;">
+                      <div><a href="" data-mdb-toggle="tooltip" title="wind speed"><i class="fas fa-wind fa-fw" style="color: #868B94;"></i> <span class="ms-1"> {{city_weather.wind}} km/h </span></a></div>
+                      <div><a href="" data-mdb-toggle="tooltip" title="Humidity"><i class="fas fa-tint fa-fw" style="color: #868B94;"></i> <span class="ms-1"> {{city_weather.humidity}}% </span></a></div>
+                      <div><a href="" data-mdb-toggle="tooltip" title="Pressure"><img width='20' src="https://img.icons8.com/color/48/000000/atmospheric-pressure.png"/><span class="ms-1"> {{city_weather.pressure}}h </span></a></div>
+                    </div>
+                    <div>
+                      <img src="https://openweathermap.org/img/w/{{city_weather.icon}}.png" width="100px">
+                    </div>
+                  </div>
+      
+                </div>
+              </div>
+            {% endfor %}
+
+  
+      
+            
+          </div>
+      
+        </div>
+      </section>
+
+    
+    
+      
+    
+
+
+    
+    <!-- End your project here-->
+    <footer class="text-center text-white" style="background-color: #f1f1f1">
+      <!-- Grid container -->
+      <div class="container pt-4">
+        <!-- Section: Social media -->
+        <section class="mb-4">
+          <!-- Facebook -->
+          <a
+            class="btn btn-link btn-floating btn-lg text-dark m-1"
+            href="#!"
+            role="button"
+            data-mdb-ripple-color="dark"
+            ><i class="fab fa-facebook-f"></i
+          ></a>
+
+          <!-- Twitter -->
+          <a
+            class="btn btn-link btn-floating btn-lg text-dark m-1"
+            href="#!"
+            role="button"
+            data-mdb-ripple-color="dark"
+            ><i class="fab fa-twitter"></i
+          ></a>
+
+          <!-- Google -->
+          <a
+            class="btn btn-link btn-floating btn-lg text-dark m-1"
+            href="#!"
+            role="button"
+            data-mdb-ripple-color="dark"
+            ><i class="fab fa-google"></i
+          ></a>
+
+          <!-- Instagram -->
+          <a
+            class="btn btn-link btn-floating btn-lg text-dark m-1"
+            href="#!"
+            role="button"
+            data-mdb-ripple-color="dark"
+            ><i class="fab fa-instagram"></i
+          ></a>
+
+          <!-- Linkedin -->
+          <a
+            class="btn btn-link btn-floating btn-lg text-dark m-1"
+            href="#!"
+            role="button"
+            data-mdb-ripple-color="dark"
+            ><i class="fab fa-linkedin"></i
+          ></a>
+          <!-- Github -->
+          <a
+            class="btn btn-link btn-floating btn-lg text-dark m-1"
+            href="#!"
+            role="button"
+            data-mdb-ripple-color="dark"
+            ><i class="fab fa-github"></i
+          ></a>
+        </section>
+        <!-- Section: Social media -->
+      </div>
+      <!-- Grid container -->
+
+      <!-- Copyright -->
+      <div
+        class="text-center text-dark p-3"
+        style="background-color: rgba(0, 0, 0, 0.2)"
+      >
+        © 2020 Copyright:
+        <a class="text-dark" href="https://mdbootstrap.com/">MDBootstrap.com</a>
+      </div>
+      <!-- Copyright -->
+    </footer>
+  </div>
+
+    <!-- MDB -->
+    <script type="text/javascript" src="{% static 'js/mdb.min.js' %}"></script>
+    <!-- Custom scripts -->
+    <script type="text/javascript">
+        const searchFocus = document.getElementById('search-focus');
+const keys = [
+  { keyCode: 'AltLeft', isTriggered: false },
+  { keyCode: 'ControlLeft', isTriggered: false },
+];
+
+window.addEventListener('keydown', (e) => {
+  keys.forEach((obj) => {
+    if (obj.keyCode === e.code) {
+      obj.isTriggered = true;
+    }
+  });
+
+  const shortcutTriggered = keys.filter((obj) => obj.isTriggered).length === keys.length;
+
+  if (shortcutTriggered) {
+    searchFocus.focus();
+  }
+});
+
+window.addEventListener('keyup', (e) => {
+  keys.forEach((obj) => {
+    if (obj.keyCode === e.code) {
+      obj.isTriggered = false;
+    }
+  });
+});
+    </script>
+  </body>
+</html>
